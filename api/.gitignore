@@ -149,3 +149,7 @@ dist
 .yarn/install-state.gz
 .pnp.*
 /src/generated/prisma
+
+# Database files
+*.db
+*.db-journal
