@@ -8,6 +8,8 @@ O assistente de IA interage com clientes para identificar suas necessidades e en
 
 ## 🛠️ Stack Tecnológica
 
+### Backend (API)
+
 - **Node.js** - Runtime JavaScript
 - **TypeScript** - Superset tipado do JavaScript
 - **Fastify** - Framework web rápido e eficiente
@@ -17,6 +19,12 @@ O assistente de IA interage com clientes para identificar suas necessidades e en
 - **Scalar** - Documentação interativa de API
 - **Swagger** - Especificação OpenAPI
 - **Groq SDK** - Integração com LLM (LLaMA 3.3 70B)
+
+### Frontend (Web)
+
+- **React 19** - Biblioteca para construção de interfaces
+- **TypeScript** - Tipagem estática para JavaScript
+- **Vite** - Build tool e dev server ultrarrápido
 
 ## 📋 Pré-requisitos
 
@@ -256,11 +264,3 @@ pnpm prisma studio
 - [ ] Implementar autenticação
 - [ ] Adicionar logs estruturados
 - [ ] Métricas e monitoramento
-
-## 📝 Licença
-
-ISC
-
-## 👤 Autor
-
-Seu Nome - Desafio Técnico 2026
