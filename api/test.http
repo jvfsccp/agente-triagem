@@ -1,0 +1,80 @@
+### Agente de Triagem API - Testes
+### Certifique-se de que o servidor está rodando em http://localhost:3333
+
+@baseUrl = http://localhost:3333
+
+### Health Check
+GET {{baseUrl}}/health
+
+### 1. Criar nova conversa - Fluxo de Pagamento
+POST {{baseUrl}}/messages
+Content-Type: application/json
+
+{
+  "content": "Gostaria de pagar meu boleto que vence hoje."
+}
+
+### 2. Continuar conversa existente (substitua o conversationId pelo ID retornado acima)
+POST {{baseUrl}}/messages
+Content-Type: application/json
+
+{
+  "conversationId": "COLE_O_ID_AQUI",
+  "content": "Tenho sim, o CPF é 123.456.789-00."
+}
+
+### 3. Fluxo de Negociação
+POST {{baseUrl}}/messages
+Content-Type: application/json
+
+{
+  "content": "Estou com um boleto atrasado e queria um desconto para quitar."
+}
+
+### 4. Fluxo de Suporte
+POST {{baseUrl}}/messages
+Content-Type: application/json
+
+{
+  "content": "Eu paguei o boleto ontem, mas meu acesso ainda está bloqueado."
+}
+
+### 5. Fluxo Fora de Contexto (deve bloquear)
+POST {{baseUrl}}/messages
+Content-Type: application/json
+
+{
+  "content": "Vocês sabem se vai chover hoje? Queria sair para pagar o boleto na lotérica."
+}
+
+### 6. Buscar conversa específica (substitua pelo ID)
+GET {{baseUrl}}/messages/COLE_O_ID_AQUI
+
+### 7. Listar todas as conversas
+GET {{baseUrl}}/messages
+
+### Exemplos de conversas completas:
+
+### Exemplo: Compra/Vendas
+POST {{baseUrl}}/messages
+Content-Type: application/json
+
+{
+  "content": "Quero comprar um produto novo, quanto custa?"
+}
+
+### Exemplo: Problema com produto
+POST {{baseUrl}}/messages
+Content-Type: application/json
+
+{
+  "content": "Meu pedido chegou com defeito, o que faço?"
+}
+
+### Exemplo: Nota fiscal
+POST {{baseUrl}}/messages
+Content-Type: application/json
+
+{
+  "content": "Não recebi a nota fiscal da minha compra."
+}
