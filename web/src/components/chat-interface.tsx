@@ -19,7 +19,6 @@ export function ChatInterface() {
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // Auto scroll para a última mensagem
   useEffect(() => {
     if (scrollAreaRef.current) {
       const scrollContainer = scrollAreaRef.current.querySelector(
@@ -54,7 +53,6 @@ export function ChatInterface() {
     } catch (err) {
       setError('Erro ao enviar mensagem. Tente novamente.')
       console.error('Erro:', err)
-      // Restaurar a mensagem em caso de erro
       setInputValue(messageContent)
     } finally {
       setIsLoading(false)
@@ -74,7 +72,6 @@ export function ChatInterface() {
 
   return (
     <div className="flex flex-col h-screen bg-background">
-      {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm shadow-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -103,7 +100,6 @@ export function ChatInterface() {
         </div>
       </header>
 
-      {/* Chat Area */}
       <div className="flex-1 container mx-auto px-4 py-4 flex flex-col max-w-5xl min-h-0">
         <Card className="flex-1 flex flex-col shadow-lg min-h-0">
           <ScrollArea ref={scrollAreaRef} className="flex-1 px-2 min-h-0">
@@ -155,7 +151,6 @@ export function ChatInterface() {
             )}
           </ScrollArea>
 
-          {/* Input Area */}
           <div className="border-t bg-card/50 p-4 shrink-0">
             {error && (
               <div className="mb-3 p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-sm text-destructive">

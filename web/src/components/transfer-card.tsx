@@ -31,7 +31,6 @@ export function TransferCard({ department, summary }: TransferCardProps) {
     <div className="px-4 py-6">
       <div className="mx-auto max-w-md border-2 rounded-lg shadow-sm bg-card">
         <div className="p-4 space-y-3">
-          {/* Header de Transferência */}
           <div className="flex items-center gap-3 flex-wrap">
             <div className="flex items-center gap-2 flex-1 min-w-0">
               <ArrowRight className="h-5 w-5 text-primary shrink-0" />
@@ -52,7 +51,6 @@ export function TransferCard({ department, summary }: TransferCardProps) {
             </Badge>
           </div>
 
-          {/* Resumo para o Atendente */}
           {summary && (
             <div
               className="rounded-lg p-3 border"

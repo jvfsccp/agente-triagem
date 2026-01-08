@@ -76,7 +76,6 @@ export class AIService {
     userMessage: string
   ): Promise<AnalysisResult> {
     try {
-      // Prepara o histórico de mensagens
       const messages = [
         { role: 'system' as const, content: SYSTEM_PROMPT },
         ...conversationHistory.map((msg) => ({
@@ -86,9 +85,8 @@ export class AIService {
         { role: 'user' as const, content: userMessage },
       ]
 
-      // Chama a API do Groq
       const completion = await groq.chat.completions.create({
-        model: 'llama-3.3-70b-versatile', // Modelo gratuito e rápido do Groq
+        model: 'llama-3.3-70b-versatile',
         messages,
         temperature: 0.7,
         max_tokens: 500,
@@ -101,10 +99,8 @@ export class AIService {
         throw new Error('Resposta vazia da IA')
       }
 
-      // Parse da resposta JSON
       const analysis: AnalysisResult = JSON.parse(responseContent)
 
-      // Validação básica
       if (!analysis.message) {
         throw new Error('Resposta da IA não contém mensagem')
       }
@@ -113,7 +109,6 @@ export class AIService {
     } catch (error) {
       console.error('Erro ao analisar mensagem com IA:', error)
 
-      // Fallback em caso de erro
       return {
         shouldTransfer: false,
         department: null,
