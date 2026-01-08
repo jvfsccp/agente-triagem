@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input'
 import { Card } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { ChatMessage } from '@/components/chat-message'
+import { TransferCard } from '@/components/transfer-card'
 import { apiService } from '@/services/api'
 import type { Message, Conversation } from '@/types/message'
 import { Send, Loader2, MessageSquare } from 'lucide-react'
@@ -18,17 +19,18 @@ export function ChatInterface() {
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // Auto scroll para a última mensagem
   useEffect(() => {
     if (scrollAreaRef.current) {
       const scrollContainer = scrollAreaRef.current.querySelector(
         '[data-radix-scroll-area-viewport]'
       )
       if (scrollContainer) {
-        scrollContainer.scrollTop = scrollContainer.scrollHeight
+        setTimeout(() => {
+          scrollContainer.scrollTop = scrollContainer.scrollHeight
+        }, 100)
       }
     }
-  }, [messages])
+  }, [messages, isLoading, conversation?.status])
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -51,7 +53,6 @@ export function ChatInterface() {
     } catch (err) {
       setError('Erro ao enviar mensagem. Tente novamente.')
       console.error('Erro:', err)
-      // Restaurar a mensagem em caso de erro
       setInputValue(messageContent)
     } finally {
       setIsLoading(false)
@@ -71,7 +72,6 @@ export function ChatInterface() {
 
   return (
     <div className="flex flex-col h-screen bg-background">
-      {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm shadow-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -92,7 +92,7 @@ export function ChatInterface() {
             <Button
               variant="outline"
               onClick={handleNewConversation}
-              className="hidden sm:flex"
+              className="hidden sm:flex cursor-pointer bg-[hsl(var(--chat-user-bg))] text-white"
             >
               Nova Conversa
             </Button>
@@ -100,10 +100,9 @@ export function ChatInterface() {
         </div>
       </header>
 
-      {/* Chat Area */}
-      <div className="flex-1 container mx-auto px-4 py-4 flex flex-col max-w-5xl">
-        <Card className="flex-1 flex flex-col shadow-lg overflow-hidden">
-          <ScrollArea ref={scrollAreaRef} className="flex-1 px-2">
+      <div className="flex-1 container mx-auto px-4 py-4 flex flex-col max-w-5xl min-h-0">
+        <Card className="flex-1 flex flex-col shadow-lg min-h-0">
+          <ScrollArea ref={scrollAreaRef} className="flex-1 px-2 min-h-0">
             {messages.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full py-12 px-4">
                 <div className="h-20 w-20 rounded-2xl bg-linear-to-br from-primary/10 to-primary/5 flex items-center justify-center mb-6">
@@ -118,7 +117,7 @@ export function ChatInterface() {
                 </p>
               </div>
             ) : (
-              <div className="py-4">
+              <div className="py-4 space-y-0">
                 {messages.map((message) => (
                   <ChatMessage
                     key={message.id}
@@ -126,6 +125,13 @@ export function ChatInterface() {
                     department={conversation?.department}
                   />
                 ))}
+
+                {isTransferred && conversation?.department && (
+                  <TransferCard
+                    department={conversation.department}
+                    summary={conversation.summary}
+                  />
+                )}
 
                 {isLoading && (
                   <div className="flex gap-3 px-4 py-6">
@@ -145,8 +151,7 @@ export function ChatInterface() {
             )}
           </ScrollArea>
 
-          {/* Input Area */}
-          <div className="border-t bg-card/50 p-4">
+          <div className="border-t bg-card/50 p-4 shrink-0">
             {error && (
               <div className="mb-3 p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-sm text-destructive">
                 {error}
@@ -154,11 +159,13 @@ export function ChatInterface() {
             )}
 
             {isTransferred && (
-              <div className="mb-3 p-3 bg-accent border border-border rounded-lg text-sm text-accent-foreground">
-                <strong>Conversa encerrada.</strong> Você foi transferido para o
-                setor de {conversation.department === 'SALES' && 'Vendas'}
-                {conversation.department === 'SUPPORT' && 'Suporte'}
-                {conversation.department === 'FINANCE' && 'Financeiro'}.
+              <div className="mb-3 p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                <p className="text-sm text-amber-900 dark:text-amber-100 font-medium">
+                  ✓ Conversa encerrada - Você foi transferido para o setor de{' '}
+                  {conversation.department === 'SALES' && 'Vendas'}
+                  {conversation.department === 'SUPPORT' && 'Suporte'}
+                  {conversation.department === 'FINANCE' && 'Financeiro'}
+                </p>
               </div>
             )}
 
@@ -193,21 +200,14 @@ export function ChatInterface() {
               </Button>
             </form>
 
-            <p className="text-xs text-muted-foreground mt-2 text-center">
-              {inputValue.length}/2000 caracteres
-            </p>
+            {!isTransferred && (
+              <p className="text-xs text-muted-foreground mt-2 text-center">
+                {inputValue.length}/2000 caracteres
+              </p>
+            )}
           </div>
         </Card>
       </div>
-
-      {/* Footer */}
-      <footer className="border-t bg-card/30 backdrop-blur-sm py-3">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-sm text-muted-foreground">
-            Desenvolvido com ❤️ para atendimento inteligente
-          </p>
-        </div>
-      </footer>
     </div>
   )
 }

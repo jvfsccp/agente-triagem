@@ -115,17 +115,63 @@ export async function messageRoutes(app: FastifyInstance) {
     {
       schema: {
         summary: 'Listar conversas',
-        description: 'Lista todas as conversas',
+        description: 'Lista todas as conversas com filtros opcionais',
+        tags: ['messages'],
+        querystring: {
+          type: 'object',
+          properties: {
+            status: {
+              type: 'string',
+              enum: ['OPEN', 'TRANSFERRED', 'CLOSED'],
+              description: 'Filtrar por status da conversa',
+            },
+            department: {
+              type: 'string',
+              enum: ['SALES', 'SUPPORT', 'FINANCE'],
+              description: 'Filtrar por departamento',
+            },
+          },
+        },
+      },
+    },
+    async (request, reply) => {
+      try {
+        const { status, department } = request.query as {
+          status?: 'OPEN' | 'TRANSFERRED' | 'CLOSED'
+          department?: 'SALES' | 'SUPPORT' | 'FINANCE'
+        }
+
+        const conversations = await messageService.getAllConversations({
+          status,
+          department,
+        })
+
+        return reply.status(200).send(conversations)
+      } catch (error) {
+        return reply.status(500).send({
+          error: 'Erro ao listar conversas',
+        })
+      }
+    }
+  )
+
+  // GET /queues - Resumo das filas por departamento
+  app.get(
+    '/queues',
+    {
+      schema: {
+        summary: 'Resumo das filas',
+        description: 'Retorna o resumo de conversas por departamento e status',
         tags: ['messages'],
       },
     },
     async (request, reply) => {
       try {
-        const conversations = await messageService.getAllConversations()
-        return reply.status(200).send(conversations)
+        const queues = await messageService.getQueuesOverview()
+        return reply.status(200).send(queues)
       } catch (error) {
         return reply.status(500).send({
-          error: 'Erro ao listar conversas',
+          error: 'Erro ao buscar resumo das filas',
         })
       }
     }
