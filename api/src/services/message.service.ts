@@ -139,8 +139,22 @@ export class MessageService {
     return conversation as ConversationOutput | null
   }
 
-  async getAllConversations(): Promise<ConversationOutput[]> {
+  async getAllConversations(filters?: {
+    status?: ConversationStatus
+    department?: Department
+  }): Promise<ConversationOutput[]> {
+    const where: any = {}
+
+    if (filters?.status) {
+      where.status = filters.status
+    }
+
+    if (filters?.department) {
+      where.department = filters.department
+    }
+
     const conversations = await prisma.conversation.findMany({
+      where,
       include: {
         messages: {
           orderBy: { createdAt: 'asc' },
@@ -150,5 +164,37 @@ export class MessageService {
     })
 
     return conversations as ConversationOutput[]
+  }
+
+  async getQueuesOverview(): Promise<{
+    total: number
+    open: number
+    transferred: number
+    byDepartment: {
+      sales: number
+      support: number
+      finance: number
+    }
+  }> {
+    const [total, open, transferred, sales, support, finance] =
+      await Promise.all([
+        prisma.conversation.count(),
+        prisma.conversation.count({ where: { status: 'OPEN' } }),
+        prisma.conversation.count({ where: { status: 'TRANSFERRED' } }),
+        prisma.conversation.count({ where: { department: 'SALES' } }),
+        prisma.conversation.count({ where: { department: 'SUPPORT' } }),
+        prisma.conversation.count({ where: { department: 'FINANCE' } }),
+      ])
+
+    return {
+      total,
+      open,
+      transferred,
+      byDepartment: {
+        sales,
+        support,
+        finance,
+      },
+    }
   }
 }
