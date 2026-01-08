@@ -161,8 +161,7 @@ export async function messageRoutes(app: FastifyInstance) {
     {
       schema: {
         summary: 'Resumo das filas',
-        description:
-          'Retorna o resumo de conversas por departamento e status',
+        description: 'Retorna o resumo de conversas por departamento e status',
         tags: ['messages'],
       },
     },

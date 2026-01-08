@@ -2,79 +2,144 @@
 ### Certifique-se de que o servidor está rodando em http://localhost:3333
 
 @baseUrl = http://localhost:3333
+@conversationId = 
 
 ### Health Check
 GET {{baseUrl}}/health
 
-### 1. Criar nova conversa - Fluxo de Pagamento
+### ============================================
+### GERENCIAMENTO DE CONVERSAS
+### ============================================
+
+### 1. Criar nova conversa
 POST {{baseUrl}}/messages
 Content-Type: application/json
 
 {
-  "content": "Gostaria de pagar meu boleto que vence hoje."
+  "content": "Olá, gostaria de pagar meu boleto que vence hoje"
 }
 
-### 2. Continuar conversa existente (substitua o conversationId pelo ID retornado acima)
+### 2. Continuar conversa existente
 POST {{baseUrl}}/messages
 Content-Type: application/json
 
 {
-  "conversationId": "COLE_O_ID_AQUI",
-  "content": "Tenho sim, o CPF é 123.456.789-00."
+  "conversationId": "{{conversationId}}",
+  "content": "Tenho sim, o CPF é 123.456.789-00"
 }
 
-### 3. Fluxo de Negociação
-POST {{baseUrl}}/messages
-Content-Type: application/json
+### 3. Buscar conversa específica
+GET {{baseUrl}}/messages/{{conversationId}}
 
-{
-  "content": "Estou com um boleto atrasado e queria um desconto para quitar."
-}
-
-### 4. Fluxo de Suporte
-POST {{baseUrl}}/messages
-Content-Type: application/json
-
-{
-  "content": "Eu paguei o boleto ontem, mas meu acesso ainda está bloqueado."
-}
-
-### 5. Fluxo Fora de Contexto (deve bloquear)
-POST {{baseUrl}}/messages
-Content-Type: application/json
-
-{
-  "content": "Vocês sabem se vai chover hoje? Queria sair para pagar o boleto na lotérica."
-}
-
-### 6. Buscar conversa específica (substitua pelo ID)
-GET {{baseUrl}}/messages/COLE_O_ID_AQUI
-
-### 7. Listar todas as conversas
+### 4. Listar todas as conversas
 GET {{baseUrl}}/messages
 
-### Exemplos de conversas completas:
+### ============================================
+### FILTROS DE FILAS
+### ============================================
 
-### Exemplo: Compra/Vendas
+### 5. Listar conversas ABERTAS
+GET {{baseUrl}}/messages?status=OPEN
+
+### 6. Listar conversas TRANSFERIDAS
+GET {{baseUrl}}/messages?status=TRANSFERRED
+
+### 7. Listar conversas FECHADAS
+GET {{baseUrl}}/messages?status=CLOSED
+
+### 8. Listar conversas do departamento FINANCEIRO
+GET {{baseUrl}}/messages?department=FINANCE
+
+### 9. Listar conversas do departamento VENDAS
+GET {{baseUrl}}/messages?department=SALES
+
+### 10. Listar conversas do departamento SUPORTE
+GET {{baseUrl}}/messages?department=SUPPORT
+
+### 11. Combinar filtros: TRANSFERIDAS para FINANCEIRO
+GET {{baseUrl}}/messages?status=TRANSFERRED&department=FINANCE
+
+### 12. Combinar filtros: TRANSFERIDAS para VENDAS
+GET {{baseUrl}}/messages?status=TRANSFERRED&department=SALES
+
+### 13. Combinar filtros: TRANSFERIDAS para SUPORTE
+GET {{baseUrl}}/messages?status=TRANSFERRED&department=SUPPORT
+
+### ============================================
+### RESUMO DAS FILAS
+### ============================================
+
+### 14. Visão geral das filas (overview)
+GET {{baseUrl}}/queues
+
+### ============================================
+### CASOS DE TESTE - FLUXOS COMPLETOS
+### ============================================
+
+### Teste 1: Fluxo Financeiro (Pagamento Direto)
+# Mensagem 1: Cliente informa que quer pagar
 POST {{baseUrl}}/messages
 Content-Type: application/json
 
 {
-  "content": "Quero comprar um produto novo, quanto custa?"
+  "content": "Gostaria de pagar meu boleto que vence hoje"
 }
 
-### Exemplo: Problema com produto
+### Teste 2: Fluxo Vendas/Negociação
+# Cliente busca desconto
 POST {{baseUrl}}/messages
 Content-Type: application/json
 
 {
-  "content": "Meu pedido chegou com defeito, o que faço?"
+  "content": "Estou com um boleto atrasado e queria um desconto para quitar"
 }
 
-### Exemplo: Nota fiscal
+### Teste 3: Fluxo Suporte (Problema)
+# Cliente reclama de serviço bloqueado
 POST {{baseUrl}}/messages
 Content-Type: application/json
 
 {
-  "content": "Não recebi a nota fiscal da minha compra."
+  "content": "Eu paguei o boleto ontem mas meu acesso ainda está bloqueado"
+}
+
+### Teste 4: Fora de Contexto
+# IA deve recusar e redirecionar
+POST {{baseUrl}}/messages
+Content-Type: application/json
+
+{
+  "content": "Vocês sabem se vai chover hoje? Queria sair para pagar na lotérica"
+}
+
+### Teste 5: Vendas - Dúvida sobre Produto
+POST {{baseUrl}}/messages
+Content-Type: application/json
+
+{
+  "content": "Quais são os planos disponíveis e quanto custam?"
+}
+
+### Teste 6: Suporte - Erro no Sistema
+POST {{baseUrl}}/messages
+Content-Type: application/json
+
+{
+  "content": "O sistema está dando erro quando tento fazer login"
+}
+
+### Teste 7: Financeiro - Nota Fiscal
+POST {{baseUrl}}/messages
+Content-Type: application/json
+
+{
+  "content": "Preciso da segunda via da nota fiscal"
+}
+
+### Teste 8: Financeiro - Estorno
+POST {{baseUrl}}/messages
+Content-Type: application/json
+
+{
+  "content": "Fiz um pagamento duplicado e quero solicitar estorno"
 }
