@@ -1,12 +1,12 @@
-import { cn } from '@/lib/utils';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import type { Message } from '@/types/message';
-import { Bot, User } from 'lucide-react';
+import { cn } from '@/lib/utils'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import type { Message } from '@/types/message'
+import { Bot, User } from 'lucide-react'
 
 interface ChatMessageProps {
-  message: Message;
-  department?: 'SALES' | 'SUPPORT' | 'FINANCE' | null;
+  message: Message
+  department?: 'SALES' | 'SUPPORT' | 'FINANCE' | null
 }
 
 const departmentConfig = {
@@ -25,25 +25,22 @@ const departmentConfig = {
     color: 'hsl(var(--sector-financial))',
     bgColor: 'hsl(var(--sector-financial) / 0.1)',
   },
-};
+}
 
 export function ChatMessage({ message, department }: ChatMessageProps) {
-  const isUser = message.role === 'USER';
-  const isSystem = message.role === 'SYSTEM';
-  
+  const isUser = message.role === 'USER'
+  const isSystem = message.role === 'SYSTEM'
+
   if (isSystem) {
     return (
       <div className="flex justify-center py-4">
         <div className="max-w-md text-center">
-          <Badge 
-            variant="secondary" 
-            className="px-4 py-2 text-sm font-medium"
-          >
+          <Badge variant="secondary" className="px-4 py-2 text-sm font-medium">
             {message.content}
           </Badge>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -60,7 +57,7 @@ export function ChatMessage({ message, department }: ChatMessageProps) {
           </AvatarFallback>
         </Avatar>
       )}
-      
+
       <div
         className={cn(
           'flex flex-col gap-2 max-w-[75%] sm:max-w-[65%]',
@@ -79,7 +76,7 @@ export function ChatMessage({ message, department }: ChatMessageProps) {
             {message.content}
           </p>
         </div>
-        
+
         <div className="flex items-center gap-2 px-2">
           <span className="text-xs text-muted-foreground">
             {new Date(message.createdAt).toLocaleTimeString('pt-BR', {
@@ -87,7 +84,7 @@ export function ChatMessage({ message, department }: ChatMessageProps) {
               minute: '2-digit',
             })}
           </span>
-          
+
           {!isUser && department && departmentConfig[department] && (
             <Badge
               variant="outline"
@@ -103,7 +100,7 @@ export function ChatMessage({ message, department }: ChatMessageProps) {
           )}
         </div>
       </div>
-      
+
       {isUser && (
         <Avatar className="h-9 w-9 shrink-0 border-2 border-primary/10">
           <AvatarFallback className="bg-primary text-primary-foreground">
@@ -112,5 +109,5 @@ export function ChatMessage({ message, department }: ChatMessageProps) {
         </Avatar>
       )}
     </div>
-  );
+  )
 }

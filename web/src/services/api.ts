@@ -1,12 +1,12 @@
-import type { SendMessageRequest, Conversation } from '../types/message';
+import type { SendMessageRequest, Conversation } from '../types/message'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3333';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3333'
 
 export class ApiService {
-  private baseUrl: string;
+  private baseUrl: string
 
   constructor() {
-    this.baseUrl = API_URL;
+    this.baseUrl = API_URL
   }
 
   async sendMessage(data: SendMessageRequest): Promise<Conversation> {
@@ -16,15 +16,15 @@ export class ApiService {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
-    });
+    })
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error || 'Erro ao enviar mensagem');
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.error || 'Erro ao enviar mensagem')
     }
 
-    const result = await response.json();
-    
+    const result = await response.json()
+
     // Converter strings de data para objetos Date
     return {
       ...result,
@@ -34,7 +34,7 @@ export class ApiService {
         ...msg,
         createdAt: new Date(msg.createdAt),
       })),
-    };
+    }
   }
 
   async getConversation(conversationId: string): Promise<Conversation> {
@@ -43,14 +43,14 @@ export class ApiService {
       headers: {
         'Content-Type': 'application/json',
       },
-    });
+    })
 
     if (!response.ok) {
-      throw new Error('Erro ao buscar conversa');
+      throw new Error('Erro ao buscar conversa')
     }
 
-    const result = await response.json();
-    
+    const result = await response.json()
+
     return {
       ...result,
       createdAt: new Date(result.createdAt),
@@ -59,8 +59,8 @@ export class ApiService {
         ...msg,
         createdAt: new Date(msg.createdAt),
       })),
-    };
+    }
   }
 }
 
-export const apiService = new ApiService();
+export const apiService = new ApiService()

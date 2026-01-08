@@ -1,6 +1,6 @@
 /**
  * ESTRUTURA DE COMPONENTES - AGENTE DE TRIAGEM
- * 
+ *
  * Esta é a arquitetura dos componentes do frontend:
  */
 
@@ -53,7 +53,7 @@
  * - Envia mensagem do usuário
  * - Recebe resposta do assistente
  * - Atualiza estado da conversa
- * 
+ *
  * apiService.getConversation()
  * - Busca conversa existente
  * - Carrega histórico de mensagens
@@ -65,19 +65,19 @@
 
 // @ts-nocheck
 interface Message {
-  id: string;
-  conversationId: string;
-  role: 'user' | 'assistant' | 'system';
-  content: string;
-  createdAt: Date;
+  id: string
+  conversationId: string
+  role: 'user' | 'assistant' | 'system'
+  content: string
+  createdAt: Date
 }
 
 interface Conversation {
-  id: string;
-  status: 'active' | 'transferred' | 'closed';
-  department: 'sales' | 'support' | 'financial' | null;
-  summary: string | null;
-  messages: Message[];
+  id: string
+  status: 'active' | 'transferred' | 'closed'
+  department: 'sales' | 'support' | 'financial' | null
+  summary: string | null
+  messages: Message[]
 }
 
 // ============================================
@@ -111,4 +111,4 @@ interface Conversation {
  * - Animações suaves
  */
 
-export {};
+export {}

@@ -1,71 +1,73 @@
-import { useState, useRef, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { ChatMessage } from '@/components/chat-message';
-import { apiService } from '@/services/api';
-import type { Message, Conversation } from '@/types/message';
-import { Send, Loader2, MessageSquare } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { useState, useRef, useEffect } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card } from '@/components/ui/card'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { ChatMessage } from '@/components/chat-message'
+import { apiService } from '@/services/api'
+import type { Message, Conversation } from '@/types/message'
+import { Send, Loader2, MessageSquare } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 export function ChatInterface() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [inputValue, setInputValue] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [conversation, setConversation] = useState<Conversation | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [messages, setMessages] = useState<Message[]>([])
+  const [inputValue, setInputValue] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [conversation, setConversation] = useState<Conversation | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const scrollAreaRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   // Auto scroll para a última mensagem
   useEffect(() => {
     if (scrollAreaRef.current) {
-      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      const scrollContainer = scrollAreaRef.current.querySelector(
+        '[data-radix-scroll-area-viewport]'
+      )
       if (scrollContainer) {
-        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+        scrollContainer.scrollTop = scrollContainer.scrollHeight
       }
     }
-  }, [messages]);
+  }, [messages])
 
   const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!inputValue.trim() || isLoading) return;
+    e.preventDefault()
 
-    const messageContent = inputValue.trim();
-    setInputValue('');
-    setError(null);
-    setIsLoading(true);
+    if (!inputValue.trim() || isLoading) return
+
+    const messageContent = inputValue.trim()
+    setInputValue('')
+    setError(null)
+    setIsLoading(true)
 
     try {
       const updatedConversation = await apiService.sendMessage({
         conversationId: conversation?.id,
         content: messageContent,
-      });
+      })
 
-      setConversation(updatedConversation);
-      setMessages(updatedConversation.messages);
+      setConversation(updatedConversation)
+      setMessages(updatedConversation.messages)
     } catch (err) {
-      setError('Erro ao enviar mensagem. Tente novamente.');
-      console.error('Erro:', err);
+      setError('Erro ao enviar mensagem. Tente novamente.')
+      console.error('Erro:', err)
       // Restaurar a mensagem em caso de erro
-      setInputValue(messageContent);
+      setInputValue(messageContent)
     } finally {
-      setIsLoading(false);
-      inputRef.current?.focus();
+      setIsLoading(false)
+      inputRef.current?.focus()
     }
-  };
+  }
 
   const handleNewConversation = () => {
-    setMessages([]);
-    setConversation(null);
-    setError(null);
-    setInputValue('');
-    inputRef.current?.focus();
-  };
+    setMessages([])
+    setConversation(null)
+    setError(null)
+    setInputValue('')
+    inputRef.current?.focus()
+  }
 
-  const isTransferred = conversation?.status === 'TRANSFERRED';
+  const isTransferred = conversation?.status === 'TRANSFERRED'
 
   return (
     <div className="flex flex-col h-screen bg-background">
@@ -85,7 +87,7 @@ export function ChatInterface() {
               </p>
             </div>
           </div>
-          
+
           {conversation && (
             <Button
               variant="outline"
@@ -124,7 +126,7 @@ export function ChatInterface() {
                     department={conversation?.department}
                   />
                 ))}
-                
+
                 {isLoading && (
                   <div className="flex gap-3 px-4 py-6">
                     <div className="h-9 w-9 rounded-full bg-primary/5 flex items-center justify-center border-2 border-primary/10">
@@ -150,16 +152,16 @@ export function ChatInterface() {
                 {error}
               </div>
             )}
-            
+
             {isTransferred && (
               <div className="mb-3 p-3 bg-accent border border-border rounded-lg text-sm text-accent-foreground">
-                <strong>Conversa encerrada.</strong> Você foi transferido para o setor de{' '}
-                {conversation.department === 'SALES' && 'Vendas'}
+                <strong>Conversa encerrada.</strong> Você foi transferido para o
+                setor de {conversation.department === 'SALES' && 'Vendas'}
                 {conversation.department === 'SUPPORT' && 'Suporte'}
                 {conversation.department === 'FINANCE' && 'Financeiro'}.
               </div>
             )}
-            
+
             <form onSubmit={handleSendMessage} className="flex gap-2">
               <Input
                 ref={inputRef}
@@ -190,7 +192,7 @@ export function ChatInterface() {
                 )}
               </Button>
             </form>
-            
+
             <p className="text-xs text-muted-foreground mt-2 text-center">
               {inputValue.length}/2000 caracteres
             </p>
@@ -207,5 +209,5 @@ export function ChatInterface() {
         </div>
       </footer>
     </div>
-  );
+  )
 }
