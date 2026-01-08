@@ -314,12 +314,3 @@ O frontend estará disponível em `http://localhost:5173`
 - **Finance**: Blue (#3b82f6)
 - **Font**: Manrope (200-800)
 
-## 🎯 Próximos Passos (Opcionais)
-
-- [ ] Implementar WebSocket para respostas em tempo real
-- [ ] Adicionar testes automatizados (Jest/Vitest)
-- [ ] Dockerizar a aplicação
-- [ ] Implementar autenticação
-- [ ] Adicionar logs estruturados
-- [ ] Métricas e monitoramento
-- [ ] Deploy em produção (Vercel/Railway)
